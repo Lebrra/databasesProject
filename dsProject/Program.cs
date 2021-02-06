@@ -12,7 +12,7 @@ namespace dsProject
         static void Main(string[] args)
         {
             //List<TestItem> items;
-            TestItem item;
+            /*TestItem item;
 
             using (StreamReader r = new StreamReader("test.json"))
             {
@@ -28,6 +28,25 @@ namespace dsProject
                 Console.WriteLine(item.data);
             }
             else Console.WriteLine("sadness");
+            */
+
+            // csv reading:
+
+            int total = 0;
+
+            using (var reader = new StreamReader("vgsales-12-4-2019.csv"))
+            {
+                while (!reader.EndOfStream)
+                {
+                    var line = reader.ReadLine();
+                    var values = line.Split(',');
+                    total++;
+
+                    //Console.WriteLine(values[0]);
+                }
+            }
+
+            Console.WriteLine("Total lines: " + total);
 
             Console.ReadKey();
         }
