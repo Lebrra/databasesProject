@@ -1,9 +1,0 @@
-D:\- Documents -\SCHOOL\Semester_8\Databases\databasesProject\dsProject\bin\Debug\dsProject.exe
-D:\- Documents -\SCHOOL\Semester_8\Databases\databasesProject\dsProject\bin\Debug\dsProject.pdb
-D:\- Documents -\SCHOOL\Semester_8\Databases\databasesProject\dsProject\bin\Debug\Newtonsoft.Json.dll
-D:\- Documents -\SCHOOL\Semester_8\Databases\databasesProject\dsProject\bin\Debug\Newtonsoft.Json.xml
-D:\- Documents -\SCHOOL\Semester_8\Databases\databasesProject\dsProject\obj\Debug\dsProject.csprojAssemblyReference.cache
-D:\- Documents -\SCHOOL\Semester_8\Databases\databasesProject\dsProject\obj\Debug\dsProject.csproj.CoreCompileInputs.cache
-D:\- Documents -\SCHOOL\Semester_8\Databases\databasesProject\dsProject\obj\Debug\dsProject.csproj.CopyComplete
-D:\- Documents -\SCHOOL\Semester_8\Databases\databasesProject\dsProject\obj\Debug\dsProject.exe
-D:\- Documents -\SCHOOL\Semester_8\Databases\databasesProject\dsProject\obj\Debug\dsProject.pdb
