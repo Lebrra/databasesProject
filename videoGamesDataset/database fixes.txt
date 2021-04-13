@@ -1,0 +1,3 @@
+Rows to fix because of commas: (226)
+
+select rank, game_name, genre, url from games where url not like "http%" and url not like "";
