@@ -12,6 +12,7 @@ public static class SQLConnection
 	static string netID = "blasczyklm05";
 	static string hostName = "washington.uww.edu";
 	static string password = "lb1574";
+    public static MySqlConnection ssh; // main connection session is stored in memory as not to be destroyed
 
 	public static void Connect()
     {
@@ -20,8 +21,8 @@ public static class SQLConnection
 			string connectString = "Server=" + hostName + "; Database=" + databasePrefix + "; Uid=" + netID + "; Pwd=" + password + ";";
 			//string connectString = "Server=" + hostName + "; Database=" + databasePrefix + "; Uid=" + netID + "; Pwd=" + password + "; CharSet=utf8;";
 			Debug.Log(connectString);
-			connection = new MySqlConnection(connectString);
-			connection.Open();
+			ssh = new MySqlConnection(connectString);
+			ssh.Open();
 			Debug.Log("Successfully connected to the database");
 		}
 		catch (MySqlException ex)
