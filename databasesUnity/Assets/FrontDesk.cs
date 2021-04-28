@@ -11,10 +11,10 @@ public class FrontDesk : MonoBehaviour
     // Should deal with all the authentication stuff and parse incoming data into memory
     // Start is called before the first frame update
 
-    InputField shadow;
-    InputField prefix;
-    InputField nID;
-    InputField hostname;
+    [SerializeField] InputField shadow;
+    [SerializeField] InputField prefix;
+    [SerializeField] InputField nID;
+    [SerializeField] InputField hostname;
 
     void Start()
     {
@@ -23,7 +23,7 @@ public class FrontDesk : MonoBehaviour
 
     public static MySqlConnection CreateSession(string hostName, string databasePrefix, string netID, string password)
     {
-        MySqlConnection ssh = new MySqlConnection();
+        MySqlConnection ssh = null;
 
         try
         {
