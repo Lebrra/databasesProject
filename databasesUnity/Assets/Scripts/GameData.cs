@@ -50,6 +50,8 @@ public struct DevData
     public string note;
 
     public int gamesCount;
+
     public int[] notableGameRanks;
     public string[] notableGames;
+    public string[] notableGameImgURLs;
 }

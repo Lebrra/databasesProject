@@ -31,28 +31,6 @@ public static class SQLConnection
 		}
 	}
 
-	public static void testSQL()
-	{
-		try
-		{
-			MySqlCommand facultyCountCall = new MySqlCommand();
-			facultyCountCall.Connection = connection;
-			facultyCountCall.CommandType = CommandType.StoredProcedure;
-			facultyCountCall.CommandText = "getTotalFaculty";
-
-			facultyCountCall.Parameters.Add("@total", MySqlDbType.Int32);
-			facultyCountCall.Parameters["@total"].Direction = ParameterDirection.InputOutput;
-
-			facultyCountCall.ExecuteNonQuery();
-
-			Debug.Log("Total Faculty: " + facultyCountCall.Parameters["@total"].Value);
-		}
-		catch (MySqlException ex)
-		{
-			Debug.LogWarning(ex.ToString());
-		}
-	}
-
 	public static GameData GetAllGameData(int id)
     {
 		GameData gameData = new GameData();
@@ -141,6 +119,57 @@ public static class SQLConnection
 		return gameData;
     }
 
+	public static GameData GetMinorGameData(int id)
+    {
+		GameData gameData = new GameData();
+
+		if (id < 0 || id > 55793)
+		{
+			gameData.rank = -1;
+			return gameData;
+		}
+
+		try
+		{
+			MySqlCommand gameCall = new MySqlCommand();
+			gameCall.Connection = connection;
+			gameCall.CommandType = CommandType.StoredProcedure;
+			gameCall.CommandText = "allGameDataByRank";
+
+			gameCall.Parameters.AddWithValue("@gameRank", id);
+			gameCall.Parameters["@gameRank"].Direction = ParameterDirection.Input;
+
+			Debug.Log("Getting game data of rank " + id);
+
+			// Loading Game Data:
+			MySqlDataReader reader = gameCall.ExecuteReader();
+
+			while (reader.Read())   // this should only run once because of only having one row
+			{
+				try
+				{
+					// I don't think a loop is needed
+					if (!int.TryParse(reader[0].ToString(), out gameData.rank)) gameData.rank = -1;
+					gameData.name = reader[1].ToString();
+					gameData.urlImg = reader[7].ToString();
+				}
+				catch (MySqlException ex)
+				{
+					Debug.LogWarning(ex.ToString());
+				}
+			}
+
+			reader.Close();
+		}
+		catch (MySqlException ex)
+		{
+			Debug.LogWarning(ex.ToString());
+		}
+
+		Debug.Log("Finished single simple game query.");
+		return gameData;
+	}
+
 	public static DevData GetAllDevData(int id)
     {
 		DevData devData = new DevData();
@@ -194,6 +223,85 @@ public static class SQLConnection
 
 		Debug.Log("Finished single dev query.");
 		return devData;
+	}
+
+	public static DevData TopThreeGamesFromDev(DevData dev)
+    {
+		//gets the top 3 game ranks with matching devID, -1 if none
+		try
+		{
+			MySqlCommand gamesListCall = new MySqlCommand();
+			gamesListCall.Connection = connection;
+			gamesListCall.CommandType = CommandType.StoredProcedure;
+			gamesListCall.CommandText = "topThreeGamesFromDev";
+
+			gamesListCall.Parameters.AddWithValue("@devID", dev.id);
+			gamesListCall.Parameters["@devID"].Direction = ParameterDirection.Input;
+
+			MySqlDataReader reader = gamesListCall.ExecuteReader();
+			int currentGame = 0;
+
+			dev.notableGames = new string[3];
+			dev.notableGameImgURLs = new string[3];
+			dev.notableGameRanks = new int[3] {-1, -1, -1 };
+
+			while (reader.Read())
+            {
+				if (currentGame > 2) 
+				{
+					Debug.Log("I have run more than 3 times...");
+					break;
+				}
+				else
+				{
+					if (int.TryParse(reader[0].ToString(), out dev.notableGameRanks[currentGame]))
+					{
+						dev.notableGames[currentGame] = reader[1].ToString();
+						dev.notableGameImgURLs[currentGame] = reader[2].ToString();
+                    }
+
+				}
+
+				currentGame++;
+			}
+
+			reader.Close();
+		}
+		catch (MySqlException ex)
+		{
+			Debug.LogWarning(ex.ToString());
+		}
+
+		Debug.Log("Loaded top 3 games into dev.");
+		return dev;
+    }
+
+	public static int GamesCountFromDev(int devID)
+    {
+		int count = -1;
+
+		try
+		{
+			MySqlCommand gamesCountCall = new MySqlCommand();
+			gamesCountCall.Connection = connection;
+			gamesCountCall.CommandType = CommandType.StoredProcedure;
+			gamesCountCall.CommandText = "gamesCountFromDev";
+
+			gamesCountCall.Parameters.AddWithValue("@devID", devID);
+			gamesCountCall.Parameters["@devID"].Direction = ParameterDirection.InputOutput;
+
+			gamesCountCall.ExecuteNonQuery();
+
+			Debug.Log("Total Games from id " + devID + ": " + gamesCountCall.Parameters["@devID"].Value);
+			int.TryParse(gamesCountCall.Parameters["@devID"].Value.ToString(), out count);
+		}
+		catch (MySqlException ex)
+		{
+			Debug.LogWarning(ex.ToString());
+		}
+
+		Debug.Log("Found games count from dev id " + devID);
+		return count;
 	}
 
 	public static void EndConnection()
