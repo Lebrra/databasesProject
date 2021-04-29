@@ -7,6 +7,8 @@ using UnityEngine.Networking;
 
 public class GameLoader : MonoBehaviour
 {
+    public GameObject GamePanel;
+
     [Header("Basic Texts")]
     public TextMeshProUGUI titleText;
     public TextMeshProUGUI platformText;
@@ -37,13 +39,30 @@ public class GameLoader : MonoBehaviour
     public TextMeshProUGUI otherText;
     public Image otherFill;
 
+    float maxSales;
+    public TextMeshProUGUI graphTopText;
+    public TextMeshProUGUI graphBotText;
+
+    public void EnablePanel(bool enable)
+    {
+        GamePanel.SetActive(enable);
+    }
+
     /// <summary>
     /// Loads game data into panel
     /// **This will need data parameters
     /// </summary>
     public void LoadGameData(GameData game)
     {
+        if (game.rank < 1)
+        {
+            EnablePanel(false);
+            Debug.LogWarning("Invalid game entry.");
+            return;
+        }
+
         if (game.urlImg != "") StartCoroutine(LoadImageFromURL(game.urlImg));
+        else image.texture = defaultGame.texture;
 
         //load basic texts: 
         rankText.text = game.rank.ToString();
@@ -55,6 +74,17 @@ public class GameLoader : MonoBehaviour
 
         currentDevID = game.devID;
         devText.text = game.dev;
+        if (currentDevID == -1)
+        {
+            devText.color = new Color32(24, 24, 24, 255);
+            devText.fontStyle ^= FontStyles.Underline;
+        }
+        else
+        {
+            devText.color = new Color32(30, 72, 149, 255);
+            devText.fontStyle = FontStyles.Underline;
+        }
+
 
         pubText.text = game.pub;
 
@@ -66,28 +96,35 @@ public class GameLoader : MonoBehaviour
         // load bars and numbers
         if (game.salesGlobal > -1)
         {
-            if (game.salesGlobal > 80) globalFill.fillAmount = 1F;
-            else globalFill.fillAmount = game.salesGlobal / 80F;
+            globalFill.fillAmount = 1F;
             globalText.text = game.salesGlobal.ToString();
+
+            maxSales = game.salesGlobal;
+            float lineOne = (float)Mathf.Round(maxSales * 0.75F * 10F) / 10F;
+            graphTopText.text = lineOne.ToString();
+
+            float lineTwo = (float)Mathf.Round(maxSales * 0.375F * 10F) / 10F;
+            graphBotText.text = lineTwo.ToString();
         }
         else
         {
             globalFill.fillAmount = 0F;
             globalText.text = "NA";
+            graphTopText.text = graphBotText.text = "";
         }
 
         if (game.salesNA > -1)  // assuming if NA exists, all locations do
         {
-            naFill.fillAmount = game.salesNA / 80F;
+            naFill.fillAmount = game.salesNA / maxSales;
             naText.text = game.salesNA.ToString();
 
-            palFill.fillAmount = game.salesPAL / 80F;
+            palFill.fillAmount = game.salesPAL / maxSales;
             palText.text = game.salesPAL.ToString();
 
-            jpFill.fillAmount = game.salesJP / 80F;
+            jpFill.fillAmount = game.salesJP / maxSales;
             jpText.text = game.salesJP.ToString();
 
-            otherFill.fillAmount = game.salesOther / 80F;
+            otherFill.fillAmount = game.salesOther / maxSales;
             otherText.text = game.salesOther.ToString();
         }
         else
@@ -124,6 +161,6 @@ public class GameLoader : MonoBehaviour
     private void Start()
     {
         //StartCoroutine(LoadImageFromURL("/games/boxart/full_8932480AmericaFrontccc.jpg"));
-        LoadGameData(SQLConnection.GetAllGameData(2));
+        LoadGameData(SQLConnection.GetAllGameData(157));
     }
 }

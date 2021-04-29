@@ -48,4 +48,8 @@ public struct DevData
 
     public int established;
     public string note;
+
+    public int gamesCount;
+    public int[] notableGameRanks;
+    public string[] notableGames;
 }
