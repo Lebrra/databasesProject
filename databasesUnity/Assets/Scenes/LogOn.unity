@@ -1287,7 +1287,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.93597347, g: 1, b: 0.4669811, a: 1}
     m_PressedColor: {r: 0.16509432, g: 1, b: 0.57777077, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -1306,7 +1306,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2075980485}
+      - m_Target: {fileID: 1518196611}
         m_TargetAssemblyTypeName: FrontDesk, Assembly-CSharp
         m_MethodName: LogOnButton
         m_Mode: 1
@@ -1709,6 +1709,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1343896863}
   m_CullTransparentMesh: 0
+--- !u!1 &1518196610
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1518196612}
+  - component: {fileID: 1518196611}
+  m_Layer: 0
+  m_Name: FrontDesk
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1518196611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1518196610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26d16116459724146ac3bc8eb992d86a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shadow: {fileID: 715540437}
+  prefix: {fileID: 206412680}
+  nID: {fileID: 605379245}
+  hostname: {fileID: 1652276349}
+  status: {fileID: 1343896865}
+  text: {fileID: 1774343746}
+--- !u!4 &1518196612
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1518196610}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 605.1245, y: 269.92648, z: -22.481892}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1570284317
 GameObject:
   m_ObjectHideFlags: 0
@@ -2163,7 +2212,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Button
+  m_Text: Log-On
 --- !u!222 &1888468594
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2262,7 +2311,6 @@ GameObject:
   - component: {fileID: 2075980484}
   - component: {fileID: 2075980483}
   - component: {fileID: 2075980482}
-  - component: {fileID: 2075980485}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2336,21 +2384,3 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2075980485
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2075980481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26d16116459724146ac3bc8eb992d86a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shadow: {fileID: 715540437}
-  prefix: {fileID: 206412680}
-  nID: {fileID: 605379245}
-  hostname: {fileID: 1652276349}
-  status: {fileID: 1343896865}
-  text: {fileID: 1774343746}

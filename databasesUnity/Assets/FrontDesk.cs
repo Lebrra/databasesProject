@@ -21,13 +21,12 @@ public class FrontDesk : MonoBehaviour
     [SerializeField] Text text;
     //MySqlConnection userSession;
     
-
+    
     void Start()
     {
         //userSession = new MySqlConnection();
         InvokeRepeating("Main", 0f, 0.42f);
     }
-
 
     public void LogOnButton()
     {
