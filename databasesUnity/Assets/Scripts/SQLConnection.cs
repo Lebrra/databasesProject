@@ -6,7 +6,7 @@ using MySql.Data.MySqlClient;
 
 public static class SQLConnection
 {
-	public static MySqlConnection connection = null;
+	public static MySqlConnection connection = new MySqlConnection(); // start with a new until a valid one is created.
 	static string databasePrefix = "cs366-2211_blasczyklm05";
 	static string netID = "blasczyklm05";
 	static string hostName = "washington.uww.edu";

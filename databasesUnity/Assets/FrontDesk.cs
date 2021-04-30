@@ -19,12 +19,12 @@ public class FrontDesk : MonoBehaviour
     [SerializeField] InputField hostname;
     [SerializeField] Button status;
     [SerializeField] Text text;
-    MySqlConnection userSession;
+    //MySqlConnection userSession;
     
 
     void Start()
     {
-        userSession = new MySqlConnection();
+        //userSession = new MySqlConnection();
         InvokeRepeating("Main", 0f, 0.42f);
     }
 
@@ -40,13 +40,13 @@ public class FrontDesk : MonoBehaviour
         password = shadow.text.Trim();
         
         SQLConnection.Connect(databasePrefix, netID, hostName, password);
-        userSession = SQLConnection.connection;
+        //userSession = SQLConnection.connection;
     }
     public void Main()
     {
         //Debug.Log(userSession.ConnectionString);
         // Updates status indicator.
-        if (userSession.ConnectionString.Equals(""))
+        if (SQLConnection.connection.ConnectionString.Equals(""))
         {
             text.color = Color.red;
             text.text = "Not Connected.";
