@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Data;
 using MySql.Data.MySqlClient;
 
@@ -54,6 +55,7 @@ public class FrontDesk : MonoBehaviour
         {
             text.color = Color.green;
             text.text = "Connected.";
+            UnityEngine.SceneManagement.SceneManager.LoadScene(1, LoadSceneMode.Single);
         }
     }
 }
