@@ -6,8 +6,7 @@ using MySql.Data.MySqlClient;
 
 public static class SQLConnection
 {
-    public static MySqlConnection connection = null;
-
+	public static MySqlConnection connection = null;
 	static string databasePrefix = "cs366-2211_blasczyklm05";
 	static string netID = "blasczyklm05";
 	static string hostName = "washington.uww.edu";
@@ -30,6 +29,38 @@ public static class SQLConnection
 			Debug.LogWarning(ex.Message);
 		}
 	}
+
+	public static MySqlConnection Connect(string dp, string nid, string hn, string pswd)
+	{
+		// This method is used by LogOn scene
+		var con = new MySqlConnection();
+
+		try
+		{
+			MySqlConnectionStringBuilder strb = new MySqlConnectionStringBuilder();
+			
+			strb.CharacterSet = "latin1";
+			//strb.CertificatePassword = pswd;
+			strb.UserID = nid;
+			strb.Password = pswd;
+			strb.Database = dp;
+			strb.Server = hn;
+			//strb.Port = 22;
+			string cs = strb.GetConnectionString(true);
+			Debug.Log(cs);
+			con = new MySqlConnection(cs);
+			con.Open();
+			Debug.Log("Successfully connected to the database");
+		}
+		catch (MySqlException ex)
+		{
+			Debug.LogWarning("Unsuccessful connection.");
+			Debug.LogWarning(ex.Message);
+		}
+				
+		return con;
+	}
+
 
 	public static GameData GetAllGameData(int id)
     {
