@@ -15,11 +15,15 @@ public class FrontDesk : MonoBehaviour
     [SerializeField] InputField prefix;
     [SerializeField] InputField nID;
     [SerializeField] InputField hostname;
+    [SerializeField] Button status;
+    [SerializeField] Text text;
     MySqlConnection userSession;
+    
 
     void Start()
     {
         userSession = new MySqlConnection();
+        InvokeRepeating("Main", 0f, 0.42f);
     }
 
 
@@ -36,8 +40,24 @@ public class FrontDesk : MonoBehaviour
         userSession = SQLConnection.Connect(databasePrefix, netID, hostName, password);
     }
     // Update is called once per frame
-    void Update()
+
+    public void GoodSession()
     {
-        
+
+    }
+    public void Main()
+    {
+        Debug.Log(userSession.ConnectionString);
+        // Updates status indicator.
+        if (userSession.ConnectionString.Equals(""))
+        {
+            text.color = Color.red;
+            text.text = "Not Connected.";
+        }
+        else
+        {
+            text.color = Color.green;
+            text.text = "Connected.";
+        }
     }
 }
