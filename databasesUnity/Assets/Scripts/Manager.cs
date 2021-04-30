@@ -10,16 +10,17 @@ public class Manager : MonoBehaviour
 
     private void Awake()
     {
-        if (instance) Destroy(this);
-        else instance = this;
-        DontDestroyOnLoad(gameObject);
+        //if (instance) Destroy(this);
+        //else instance = this;
+        
+		//DontDestroyOnLoad(gameObject);
 
         SQLConnection.Connect();
     }
 
     void Start()
     {
-		
+		instance = this;
         //Invoke("testGame", 3);
     }
 
@@ -129,6 +130,11 @@ public class Manager : MonoBehaviour
 		return gameData;
 	}
 
+
+	public void NavigateTo(int idx)
+    {
+		UnityEngine.SceneManagement.SceneManager.LoadScene(idx, UnityEngine.SceneManagement.LoadSceneMode.Single);
+    }
 
 	private void OnApplicationQuit()
     {
