@@ -30,9 +30,10 @@ public static class SQLConnection
 		}
 	}
 
-	public static MySqlConnection Connect(string dp, string nid, string hn, string pswd)
+	public static void Connect(string dp, string nid, string hn, string pswd)
 	{
 		// This method is used by LogOn scene
+		// This method creates the packet string using string builder
 		var con = new MySqlConnection();
 
 		try
@@ -45,12 +46,14 @@ public static class SQLConnection
 			strb.Password = pswd;
 			strb.Database = dp;
 			strb.Server = hn;
-			//strb.Port = 22;
+			//strb.Port = 22; breaks the connection
 			string cs = strb.GetConnectionString(true);
 			Debug.Log(cs);
 			con = new MySqlConnection(cs);
 			con.Open();
 			Debug.Log("Successfully connected to the database");
+			// update local connection instance
+			connection = con;
 		}
 		catch (MySqlException ex)
 		{
@@ -58,7 +61,7 @@ public static class SQLConnection
 			Debug.LogWarning(ex.Message);
 		}
 				
-		return con;
+		//return con;
 	}
 
 

@@ -10,6 +10,7 @@ public class FrontDesk : MonoBehaviour
     // Named this script to remember the fuction of what I want it to do
     // Should deal with all the authentication stuff and parse incoming data into memory
     // Start is called before the first frame update
+    // Uses SQLConnection to create and store a session based on the credentials entered by the user
 
     [SerializeField] InputField shadow;
     [SerializeField] InputField prefix;
@@ -37,17 +38,12 @@ public class FrontDesk : MonoBehaviour
         netID = nID.text.Trim();
         password = shadow.text.Trim();
         
-        userSession = SQLConnection.Connect(databasePrefix, netID, hostName, password);
-    }
-    // Update is called once per frame
-
-    public void GoodSession()
-    {
-
+        SQLConnection.Connect(databasePrefix, netID, hostName, password);
+        userSession = SQLConnection.connection;
     }
     public void Main()
     {
-        Debug.Log(userSession.ConnectionString);
+        //Debug.Log(userSession.ConnectionString);
         // Updates status indicator.
         if (userSession.ConnectionString.Equals(""))
         {
