@@ -5,6 +5,8 @@ using UnityEngine.EventSystems;
 
 public class DevButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
+    public bool buttonEnabled = true;
+
     public int devID = -1;
 
     Color32 defaultText = new Color32(30, 72, 149, 255);
@@ -23,16 +25,28 @@ public class DevButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandl
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (!buttonEnabled) return;
+
         if (GetComponent<TMPro.TextMeshProUGUI>()) GetComponent<TMPro.TextMeshProUGUI>().color = hoverText;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (!buttonEnabled) return;
+
         if (GetComponent<TMPro.TextMeshProUGUI>()) GetComponent<TMPro.TextMeshProUGUI>().color = defaultText;
     }
 
     private void OnEnable()
     {
+        if (!buttonEnabled) return;
+
         if (GetComponent<TMPro.TextMeshProUGUI>()) GetComponent<TMPro.TextMeshProUGUI>().color = defaultText;
+    }
+
+    public void EnableButton(int id)
+    {
+        buttonEnabled = id > 0;
+        devID = id;
     }
 }

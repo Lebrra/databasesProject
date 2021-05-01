@@ -71,13 +71,13 @@ public class GameLoader : DataLoader
         {
             devText.color = new Color32(24, 24, 24, 255);
             devText.fontStyle ^= FontStyles.Underline;
-            devText.GetComponent<DevButton>().devID = -1;
+            devText.GetComponent<DevButton>().EnableButton(-1);
         }
         else
         {
             devText.color = new Color32(30, 72, 149, 255);
             devText.fontStyle = FontStyles.Underline;
-            devText.GetComponent<DevButton>().devID = currentDevID;
+            devText.GetComponent<DevButton>().EnableButton(currentDevID);
         }
 
 

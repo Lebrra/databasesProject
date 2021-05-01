@@ -37,6 +37,7 @@ public class DataUIPooler : MonoBehaviour
             return;
         }
 
+        LoadingScreen.instance?.EnableScreen(true);
         GameLoader panel;
 
         if (gamePanelPool.Count > 0)
@@ -70,6 +71,7 @@ public class DataUIPooler : MonoBehaviour
             return;
         }
 
+        LoadingScreen.instance?.EnableScreen(true);
         DevLoader panel;
 
         if (devPanelPool.Count > 0)

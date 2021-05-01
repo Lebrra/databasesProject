@@ -5,6 +5,8 @@ using UnityEngine.EventSystems;
 
 public class GameButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
+    public bool buttonEnabled = true;
+
     public int gameRank = -1;
 
     Color32 defaultText = new Color32(30, 72, 149, 255);
@@ -28,19 +30,31 @@ public class GameButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (!buttonEnabled) return;
+
         if (GetComponent<TMPro.TextMeshProUGUI>()) GetComponent<TMPro.TextMeshProUGUI>().color = hoverText;
         if (GetComponent<UnityEngine.UI.RawImage>()) GetComponent<UnityEngine.UI.RawImage>().color = hoverImg;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (!buttonEnabled) return;
+
         if (GetComponent<TMPro.TextMeshProUGUI>()) GetComponent<TMPro.TextMeshProUGUI>().color = defaultText;
         if (GetComponent<UnityEngine.UI.RawImage>()) GetComponent<UnityEngine.UI.RawImage>().color = defaultImg;
     }
 
     private void OnEnable()
     {
+        if (!buttonEnabled) return;
+
         if (GetComponent<TMPro.TextMeshProUGUI>()) GetComponent<TMPro.TextMeshProUGUI>().color = defaultText;
         if (GetComponent<UnityEngine.UI.RawImage>()) GetComponent<UnityEngine.UI.RawImage>().color = defaultImg;
+    }
+
+    public void EnableButton(int rank)
+    {
+        buttonEnabled = rank > 0;
+        gameRank = rank;
     }
 }

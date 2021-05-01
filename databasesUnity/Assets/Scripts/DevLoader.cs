@@ -77,16 +77,16 @@ public class DevLoader : DataLoader
                 images[i].transform.parent.gameObject.SetActive(true);
                 StartCoroutine(LoadImageFromURL(dev.notableGameImgURLs[i], i));
 
-                games[i].GetComponent<GameButton>().gameRank = dev.notableGameRanks[i];
-                images[i].GetComponent<GameButton>().gameRank = dev.notableGameRanks[i];
+                games[i].GetComponent<GameButton>().EnableButton(dev.notableGameRanks[i]);
+                images[i].GetComponent<GameButton>().EnableButton(dev.notableGameRanks[i]);
             }
             else
             {
                 images[i].transform.parent.gameObject.SetActive(false);
                 games[i].text = "";
 
-                games[i].GetComponent<GameButton>().gameRank = -1;
-                images[i].GetComponent<GameButton>().gameRank = -1;
+                games[i].GetComponent<GameButton>().EnableButton(-1);
+                images[i].GetComponent<GameButton>().EnableButton(-1);
             }
         }
     }
@@ -133,4 +133,9 @@ public abstract class DataLoader : MonoBehaviour
     }
 
     public virtual void ResetPanel() { }
+
+    private void OnEnable()
+    {
+        LoadingScreen.instance?.EnableScreen(false);
+    }
 }
