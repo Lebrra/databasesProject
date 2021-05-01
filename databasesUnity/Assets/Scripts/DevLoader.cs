@@ -5,10 +5,8 @@ using UnityEngine.UI;
 using UnityEngine.Networking;
 using TMPro;
 
-public class DevLoader : MonoBehaviour
+public class DevLoader : DataLoader
 {
-    public GameObject DevPanel;
-
     [Header("Left Texts")]
     int currentDevID = -1;
     public TextMeshProUGUI titleText;
@@ -27,26 +25,18 @@ public class DevLoader : MonoBehaviour
     [Header("Games List")]
     public TextMeshProUGUI[] games;
 
-    public void EnablePanel(bool enable)
-    {
-        DevPanel.SetActive(enable);
-    }
-
     /// <summary>
     /// Loads game data into panel
     /// **This will need data parameters
     /// </summary>
     public void LoadDevData(DevData dev)
     {
-        if (dev.id < 1 || dev.id > 687)
+        if (dev.id < 0 || dev.id > 687)
         {
             EnablePanel(false);
-            Debug.LogWarning("Invalid dev entry.");
+            Debug.LogWarning("Invalid dev entry. ID = " + dev.id);
             return;
         }
-
-        //if (dev.urlImg != "") StartCoroutine(LoadImageFromURL(dev.urlImg));
-        //else image.texture = defaultGame.texture;
 
         //load basic texts: 
         titleText.text = dev.name;
@@ -86,11 +76,17 @@ public class DevLoader : MonoBehaviour
                 games[i].text = dev.notableGames[i];
                 images[i].transform.parent.gameObject.SetActive(true);
                 StartCoroutine(LoadImageFromURL(dev.notableGameImgURLs[i], i));
+
+                games[i].GetComponent<GameButton>().gameRank = dev.notableGameRanks[i];
+                images[i].GetComponent<GameButton>().gameRank = dev.notableGameRanks[i];
             }
             else
             {
                 images[i].transform.parent.gameObject.SetActive(false);
                 games[i].text = "";
+
+                games[i].GetComponent<GameButton>().gameRank = -1;
+                images[i].GetComponent<GameButton>().gameRank = -1;
             }
         }
     }
@@ -118,9 +114,23 @@ public class DevLoader : MonoBehaviour
         link.Dispose();
     }
 
-    private void Start()
+    //LoadDevData(SQLConnection.GetAllDevData(70));
+
+    public override void ResetPanel()
     {
-        //LoadDevData(SQLConnection.GetAllDevData(415));
-        LoadDevData(SQLConnection.GetAllDevData(70));
+        // is this needed?
     }
+}
+
+public abstract class DataLoader : MonoBehaviour
+{
+    public GameObject Panel;
+    public bool active = true;
+
+    public void EnablePanel(bool enable)
+    {
+        Panel.SetActive(enable);
+    }
+
+    public virtual void ResetPanel() { }
 }

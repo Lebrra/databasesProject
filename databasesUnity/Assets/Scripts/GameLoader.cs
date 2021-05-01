@@ -5,10 +5,8 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Networking;
 
-public class GameLoader : MonoBehaviour
+public class GameLoader : DataLoader
 {
-    public GameObject GamePanel;
-
     [Header("Basic Texts")]
     public TextMeshProUGUI titleText;
     public TextMeshProUGUI platformText;
@@ -43,21 +41,16 @@ public class GameLoader : MonoBehaviour
     public TextMeshProUGUI graphTopText;
     public TextMeshProUGUI graphBotText;
 
-    public void EnablePanel(bool enable)
-    {
-        GamePanel.SetActive(enable);
-    }
-
     /// <summary>
     /// Loads game data into panel
     /// **This will need data parameters
     /// </summary>
     public void LoadGameData(GameData game)
     {
-        if (game.rank < 1)
+        if (game.rank < 1 || game.rank > 55793)
         {
             EnablePanel(false);
-            Debug.LogWarning("Invalid game entry.");
+            Debug.LogWarning("Invalid game entry. Rank = " + game.rank);
             return;
         }
 
@@ -78,11 +71,13 @@ public class GameLoader : MonoBehaviour
         {
             devText.color = new Color32(24, 24, 24, 255);
             devText.fontStyle ^= FontStyles.Underline;
+            devText.GetComponent<DevButton>().devID = -1;
         }
         else
         {
             devText.color = new Color32(30, 72, 149, 255);
             devText.fontStyle = FontStyles.Underline;
+            devText.GetComponent<DevButton>().devID = currentDevID;
         }
 
 
@@ -158,9 +153,10 @@ public class GameLoader : MonoBehaviour
         link.Dispose();
     }
 
-    private void Start()
+    public override void ResetPanel()
     {
-        //StartCoroutine(LoadImageFromURL("/games/boxart/full_8932480AmericaFrontccc.jpg"));
-        LoadGameData(SQLConnection.GetAllGameData(157));
+        // is this needed?
     }
+
+    //LoadGameData(SQLConnection.GetAllGameData(157));
 }
