@@ -38,7 +38,8 @@ public class DataUIPooler : MonoBehaviour
         }
 
         LoadingScreen.instance?.EnableScreen(true);
-        // disable search screens
+        SearchManager.instance?.EnableSearchMenu(false);
+
         GameLoader panel;
 
         if (gamePanelPool.Count > 0)
@@ -73,7 +74,8 @@ public class DataUIPooler : MonoBehaviour
         }
 
         LoadingScreen.instance?.EnableScreen(true);
-        // disable search screens
+        SearchManager.instance?.EnableSearchMenu(false);
+
         DevLoader panel;
 
         if (devPanelPool.Count > 0)
@@ -103,14 +105,13 @@ public class DataUIPooler : MonoBehaviour
         {
             // return to query page
             Debug.Log("Returning to search...");
+            SearchManager.instance?.EnableSearchMenu(true);
         }
-        else
-        {
-            // remove latest page
-            DataLoader lastUsed = currentList[currentList.Count - 1];
-            currentList.Remove(lastUsed);
-            ReturnPanel(lastUsed);
-        }
+
+        // remove latest page
+        DataLoader lastUsed = currentList[currentList.Count - 1];
+        currentList.Remove(lastUsed);
+        ReturnPanel(lastUsed);
     }
 
     public void ReturnPanel(DataLoader panel)

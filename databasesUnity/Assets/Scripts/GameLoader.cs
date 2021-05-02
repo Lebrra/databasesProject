@@ -24,6 +24,7 @@ public class GameLoader : DataLoader
     [Header("Image References")]
     public RawImage image;
     public Sprite defaultGame;
+    string gameURL = "";
 
     [Header("Ranking References")]
     public TextMeshProUGUI globalText;
@@ -56,6 +57,8 @@ public class GameLoader : DataLoader
 
         if (game.urlImg != "") StartCoroutine(LoadImageFromURL(game.urlImg));
         else image.texture = defaultGame.texture;
+
+        gameURL = game.url;
 
         //load basic texts: 
         rankText.text = game.rank.ToString();
@@ -156,6 +159,12 @@ public class GameLoader : DataLoader
     public override void ResetPanel()
     {
         // is this needed?
+    }
+
+    public void OpenURL()
+    {
+        if (gameURL != "")
+            Application.OpenURL(gameURL);
     }
 
     //LoadGameData(SQLConnection.GetAllGameData(157));

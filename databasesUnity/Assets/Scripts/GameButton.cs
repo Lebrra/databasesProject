@@ -8,6 +8,7 @@ public class GameButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     bool setupNeeded = true;
     TMPro.TextMeshProUGUI myText;
     TMPro.TextMeshProUGUI myLabel;
+    TMPro.TextMeshProUGUI myLabel2;
     UnityEngine.UI.RawImage myRawImage;
     UnityEngine.UI.Image myImage;
 
@@ -60,7 +61,11 @@ public class GameButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
             myText = GetComponent<TMPro.TextMeshProUGUI>();
             myRawImage = GetComponent<UnityEngine.UI.RawImage>();
             myImage = GetComponent<UnityEngine.UI.Image>();
-            if (myImage) myLabel = transform.GetChild(0).GetComponent<TMPro.TextMeshProUGUI>();
+            if (myImage)
+            {
+                myLabel = transform.GetChild(0).GetComponent<TMPro.TextMeshProUGUI>();
+                myLabel2 = transform.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>();
+            }
             setupNeeded = false;
         }
 
@@ -77,9 +82,10 @@ public class GameButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         gameRank = rank;
     }
 
-    public void SetValues(string name, int rank)
+    public void SetValues(string name, int rank, string platform)
     {
         if (myLabel) myLabel.text = name;
+        if (myLabel2) myLabel2.text = platform;
         gameRank = rank;
     }
 }

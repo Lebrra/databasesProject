@@ -9,6 +9,7 @@ public class SearchManager : MonoBehaviour
 
     public GameObject SearchingPanel;
     public GameObject ResultsPanel;
+    public GameObject BackButton;
 
     [Header("Searching References")]
     [Tooltip("value = 0: Game Query\nvalue = 1: Dev Query")]
@@ -31,6 +32,7 @@ public class SearchManager : MonoBehaviour
     public TextMeshProUGUI bottomText;
 
     [Header("Results Data")]
+    public bool searchActive = false;
     public int resultsPage = 0;     // 15 fit in a 'page'
     public int currentResultsCount = -1;
     public List<GameData> gameResults;
@@ -42,6 +44,8 @@ public class SearchManager : MonoBehaviour
             if (instance != this) Destroy(instance);
 
         instance = this;
+        EnableResultsPanel(false);
+        foreach (GameObject b in resultsButtons) b.SetActive(false);
     }
 
     public void OnTypeChange()
@@ -62,6 +66,13 @@ public class SearchManager : MonoBehaviour
     private void OnEnable()
     {
         OnTypeChange();
+    }
+
+    public void EnableSearchMenu(bool enable)
+    {
+        EnableSearchPanel(enable);
+        EnableResultsPanel(enable);
+        BackButton.SetActive(enable);
     }
 
     public void EnableSearchPanel(bool enable)
@@ -92,11 +103,12 @@ public class SearchManager : MonoBehaviour
         Debug.Log("Starting search for Game...");
         LoadingScreen.instance?.EnableScreen(true);
 
+        searchActive = true;
+
         switch (GamesOptDrop.value)
         {
             case 0:     // game_name
-                string param = "%" + search.ToLower() + "%";
-
+                RecieveResults(SQLConnection.GamesNameSearch(search));
                 break;
 
             case 1:     // rank
@@ -111,19 +123,19 @@ public class SearchManager : MonoBehaviour
                 break;
 
             case 2:     // devID
-
+                RecieveResults(SQLConnection.GamesDevSearch(search));
                 break;
 
             case 3:     // publisher
-
+                RecieveResults(SQLConnection.GamesPubSearch(search));
                 break;
 
             case 4:     // platform     <- enum?
-
+                RecieveResults(SQLConnection.GamesPlatSearch(search));
                 break;
 
             case 5:     // genre        <- enum?
-
+                RecieveResults(SQLConnection.GamesGenreSearch(search));
                 break;
 
             default:
@@ -136,6 +148,8 @@ public class SearchManager : MonoBehaviour
     {
         Debug.Log("Starting search for Developer...");
         LoadingScreen.instance?.EnableScreen(true);
+
+        searchActive = true;
 
         switch (DevsOptDrop.value)
         {
@@ -162,6 +176,7 @@ public class SearchManager : MonoBehaviour
         if (!ResultsPanel.activeInHierarchy) EnableResultsPanel(true);
 
         UpdatePageButtons();
+        foreach (GameObject b in resultsButtons) b.SetActive(false);
 
         if (currentResultsCount < 1)
         {
@@ -170,7 +185,6 @@ public class SearchManager : MonoBehaviour
         }
 
         noResultsText.SetActive(false);
-        foreach (GameObject b in resultsButtons) b.SetActive(false);
 
         for(int i = 0; i < 15; i++)     // ** changing search results button count will need to have a lot of 15s updated !!
         {
@@ -189,7 +203,7 @@ public class SearchManager : MonoBehaviour
                 resultsButtons[i].GetComponent<GameButton>().enabled = true;
                 resultsButtons[i].GetComponent<DevButton>().enabled = false;
 
-                resultsButtons[i].GetComponent<GameButton>().SetValues(gameResults[resultsIterator].name, gameResults[resultsIterator].rank);
+                resultsButtons[i].GetComponent<GameButton>().SetValues(gameResults[resultsIterator].name, gameResults[resultsIterator].rank, gameResults[resultsIterator].platform);
             }
             else if (DataTypeDrop.value == 1)
             {
@@ -215,16 +229,26 @@ public class SearchManager : MonoBehaviour
         if (resultsPage > 0) leftButton.SetActive(true);
         else leftButton.SetActive(false);
 
-        if ((resultsPage + 1) * 15 < currentResultsCount)
+        int minIndex, maxIndex;
+        if (currentResultsCount < 1)
+        {
+            rightButton.SetActive(false);
+            minIndex = maxIndex = 0;
+        }
+        else if ((resultsPage + 1) * 15 < currentResultsCount)
         {
             rightButton.SetActive(true);
-            bottomText.text = "Showing " + (resultsPage * 15 + 1) + "-" + ((resultsPage + 1) * 15).ToString() + " of " + currentResultsCount.ToString();
+            minIndex = resultsPage * 15 + 1;
+            maxIndex = (resultsPage + 1) * 15;
         }
         else
         {
             rightButton.SetActive(false);
-            bottomText.text = "Showing " + (resultsPage * 15 + 1) + "-" + currentResultsCount.ToString() + " of " + currentResultsCount.ToString();
+            minIndex = resultsPage * 15 + 1;
+            maxIndex = currentResultsCount;
         }
+
+        bottomText.text = "Showing <#ADFFF4>" + minIndex + "</color>-<#ADFFF4>" + maxIndex + "</color> of <#FFE000>" + currentResultsCount.ToString();
     }
 
     public void IncrementSearchResults()
@@ -279,5 +303,21 @@ public class SearchManager : MonoBehaviour
         foreach (DevData d in data) devResults.Add(d);
 
         ShowSearchResults();
+    }
+
+    public void GoBack()
+    {
+        if (searchActive)
+        {
+            EnableResultsPanel(false);
+            SearchBar.text = "";
+
+            gameResults.Clear();
+            devResults.Clear();
+        }
+        else
+        {
+            // go back before search panel
+        }
     }
 }

@@ -337,14 +337,202 @@ public static class SQLConnection
 		return count;
 	}
 
-	public static List<GameData> GamesNameSearch(string search)
+
+
+    #region Search Methods
+
+    public static List<GameData> GamesNameSearch(string search)
     {
 		// procedure: searchGameName(IN gameName VARCHAR(255))
 
+		// adjust search string:
+		if (search.Length > 253) search = search.Substring(0, 253);
+		search = "%" + search + "%";
+		Debug.Log("Searching for game name using: " + search);
+
+		try
+		{
+			MySqlCommand gameCall = new MySqlCommand();
+			gameCall.Connection = connection;
+			gameCall.CommandType = CommandType.StoredProcedure;
+			gameCall.CommandText = "searchGameName";
+
+			gameCall.Parameters.AddWithValue("@gameName", search);
+			gameCall.Parameters["@gameName"].Direction = ParameterDirection.Input;
+
+			return GamesSearchData(gameCall);
+		}
+		catch (MySqlException ex)
+		{
+			Debug.LogWarning(ex.ToString());
+		}
+
+		Debug.LogWarning("Query error.");
 		return null;
     }
 
-	public static void EndConnection()
+	public static List<GameData> GamesPubSearch(string search)
+	{
+		// procedure: searchGamePub(IN gamePub VARCHAR(255))
+
+		// adjust search string:
+		if (search.Length > 253) search = search.Substring(0, 253);
+		search = "%" + search + "%";
+		Debug.Log("Searching for game publisher using: " + search);
+
+		try
+		{
+			MySqlCommand gameCall = new MySqlCommand();
+			gameCall.Connection = connection;
+			gameCall.CommandType = CommandType.StoredProcedure;
+			gameCall.CommandText = "searchGamePub";
+
+			gameCall.Parameters.AddWithValue("@gamePub", search);
+			gameCall.Parameters["@gamePub"].Direction = ParameterDirection.Input;
+
+			return GamesSearchData(gameCall);
+		}
+		catch (MySqlException ex)
+		{
+			Debug.LogWarning(ex.ToString());
+		}
+
+		Debug.LogWarning("Query error.");
+		return null;
+	}
+
+	public static List<GameData> GamesPlatSearch(string search)
+	{
+		// procedure: searchGamePlat(IN gamePlat VARCHAR(255))
+
+		// adjust search string:
+		if (search.Length > 253) search = search.Substring(0, 253);
+		search = "%" + search + "%";
+		Debug.Log("Searching for game platform using: " + search);
+
+		try
+		{
+			MySqlCommand gameCall = new MySqlCommand();
+			gameCall.Connection = connection;
+			gameCall.CommandType = CommandType.StoredProcedure;
+			gameCall.CommandText = "searchGamePlat";
+
+			gameCall.Parameters.AddWithValue("@gamePlat", search);
+			gameCall.Parameters["@gamePlat"].Direction = ParameterDirection.Input;
+
+			return GamesSearchData(gameCall);
+		}
+		catch (MySqlException ex)
+		{
+			Debug.LogWarning(ex.ToString());
+		}
+
+		Debug.LogWarning("Query error.");
+		return null;
+	}
+
+	public static List<GameData> GamesGenreSearch(string search)
+	{
+		// procedure: searchGameGenre(IN gameGenre VARCHAR(255))
+
+		// adjust search string:
+		if (search.Length > 253) search = search.Substring(0, 253);
+		search = "%" + search + "%";
+		Debug.Log("Searching for game genre using: " + search);
+
+		try
+		{
+			MySqlCommand gameCall = new MySqlCommand();
+			gameCall.Connection = connection;
+			gameCall.CommandType = CommandType.StoredProcedure;
+			gameCall.CommandText = "searchGameGenre";
+
+			gameCall.Parameters.AddWithValue("@gameGenre", search);
+			gameCall.Parameters["@gameGenre"].Direction = ParameterDirection.Input;
+
+			return GamesSearchData(gameCall);
+		}
+		catch (MySqlException ex)
+		{
+			Debug.LogWarning(ex.ToString());
+		}
+
+		Debug.LogWarning("Query error.");
+		return null;
+	}
+
+	public static List<GameData> GamesDevSearch(string search)
+	{
+		// procedure: searchGameDev(IN gameDev VARCHAR(255))
+
+		// adjust search string:
+		if (search.Length > 253) search = search.Substring(0, 253);
+		search = "%" + search + "%";
+		Debug.Log("Searching for game dev: " + search);
+
+		try
+		{
+			MySqlCommand gameCall = new MySqlCommand();
+			gameCall.Connection = connection;
+			gameCall.CommandType = CommandType.StoredProcedure;
+			gameCall.CommandText = "searchGameDev";
+
+			gameCall.Parameters.AddWithValue("@gameDev", search);
+			gameCall.Parameters["@gameDev"].Direction = ParameterDirection.Input;
+
+			return GamesSearchData(gameCall);
+		}
+		catch (MySqlException ex)
+		{
+			Debug.LogWarning(ex.ToString());
+		}
+
+		Debug.LogWarning("Query error.");
+		return null;
+	}
+
+	static List<GameData> GamesSearchData(MySqlCommand command)		// gives games in: { rank, game_name, platform }
+    {
+		List<GameData> dataList = new List<GameData>();
+		int dataLimiter = 1;
+
+		MySqlDataReader reader = command.ExecuteReader();
+		while (reader.Read())   // this should only run once because of only having one row
+		{
+			if(dataLimiter > 1000)
+            {
+				Debug.LogWarning("I have loaded 1000 entries, stopping here.");
+				break;
+            }
+
+			try
+			{
+				GameData game = new GameData();
+
+				if (!int.TryParse(reader[0].ToString(), out game.rank)) game.rank = -1;
+				game.name = reader[1].ToString();
+				game.platform = reader[2].ToString();
+
+				dataList.Add(game);
+				
+			}
+			catch (MySqlException ex)
+			{
+				Debug.LogWarning(ex.ToString());
+			}
+
+			dataLimiter++;
+		}
+
+		reader.Close();
+
+		Debug.Log("Search Completed. " + dataList.Count + " results found.");
+		return dataList;
+	}
+
+    #endregion
+
+    public static void EndConnection()
     {
 		connection?.Close();
 		Debug.Log("Closed connection.");
