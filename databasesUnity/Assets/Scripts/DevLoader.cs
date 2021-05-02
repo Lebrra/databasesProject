@@ -60,15 +60,25 @@ public class DevLoader : DataLoader
             games[1].text = games[2].text = "";
             games[0].text = "No notable games found.";
 
+            games[0].GetComponent<GameButton>().EnableButton(-1);
+            games[0].color = new Color32(24, 24, 24, 255);
+            games[0].fontStyle ^= FontStyles.Underline;
+
             images[0].transform.parent.gameObject.SetActive(false);
             images[1].transform.parent.gameObject.SetActive(false);
             images[2].transform.parent.gameObject.SetActive(false);
+
+            totGamesText.text = "0";
+            percentGamesText.text = "0%";
         }
     }
 
     void LoadNotableGames(DevData dev)
     {
-        for(int i = 0; i < 3; i++)
+        games[0].color = new Color32(30, 72, 149, 255);
+        games[0].fontStyle = FontStyles.Underline;
+
+        for (int i = 0; i < 3; i++)
         {
             if (dev.notableGameRanks[i] > 0)
             {

@@ -66,13 +66,20 @@ public class SearchManager : MonoBehaviour
     private void OnEnable()
     {
         OnTypeChange();
+        SearchBar.text = "";
     }
 
     public void EnableSearchMenu(bool enable)
     {
         EnableSearchPanel(enable);
-        EnableResultsPanel(enable);
+        EnableResultsPanel(enable && searchActive);
         BackButton.SetActive(enable);
+
+        if (enable)
+        {
+            OnTypeChange();
+            SearchBar.text = "";
+        }
     }
 
     public void EnableSearchPanel(bool enable)
@@ -115,6 +122,7 @@ public class SearchManager : MonoBehaviour
                 int rank = -1;
                 if (int.TryParse(search, out rank))
                 {
+                    searchActive = false;   // do not return to search results
                     EnableSearchPanel(false);
                     DataUIPooler.poolInstance.GetGamePanel(rank);
                 }
