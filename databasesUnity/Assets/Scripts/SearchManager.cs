@@ -154,15 +154,15 @@ public class SearchManager : MonoBehaviour
         switch (DevsOptDrop.value)
         {
             case 0:     // dev_name
-
+                RecieveResults(SQLConnection.DevsNameSearch(search));
                 break;
 
             case 1:     // city
-
+                RecieveResults(SQLConnection.DevsCitySearch(search));
                 break;
 
             case 2:     // country
-
+                RecieveResults(SQLConnection.DevsCountrySearch(search));
                 break;
 
             default:

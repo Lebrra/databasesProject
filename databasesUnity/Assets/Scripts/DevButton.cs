@@ -73,7 +73,11 @@ public class DevButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandl
 
     public void SetValues(string name, int id)
     {
-        if (myLabel) myLabel.text = name;
+        if (myLabel)
+        {
+            myLabel.text = name;
+            transform.GetChild(1).GetComponent<TMPro.TextMeshProUGUI>().text = "";
+        }
         devID = id;
     }
 }
