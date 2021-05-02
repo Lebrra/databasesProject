@@ -5,6 +5,12 @@ using UnityEngine.EventSystems;
 
 public class GameButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
+    bool setupNeeded = true;
+    TMPro.TextMeshProUGUI myText;
+    TMPro.TextMeshProUGUI myLabel;
+    UnityEngine.UI.RawImage myRawImage;
+    UnityEngine.UI.Image myImage;
+
     public bool buttonEnabled = true;
 
     public int gameRank = -1;
@@ -21,8 +27,9 @@ public class GameButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     {
         if (gameRank > 0)
         {
-            if (GetComponent<TMPro.TextMeshProUGUI>()) GetComponent<TMPro.TextMeshProUGUI>().color = clickText;
-            if (GetComponent<UnityEngine.UI.RawImage>()) GetComponent<UnityEngine.UI.RawImage>().color = clickImg;
+            if (myText) myText.color = clickText;
+            if (myRawImage) myRawImage.color = clickImg;
+            if (myImage) myImage.color = clickImg;
 
             DataUIPooler.poolInstance.GetGamePanel(gameRank);
         }
@@ -32,29 +39,47 @@ public class GameButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     {
         if (!buttonEnabled) return;
 
-        if (GetComponent<TMPro.TextMeshProUGUI>()) GetComponent<TMPro.TextMeshProUGUI>().color = hoverText;
-        if (GetComponent<UnityEngine.UI.RawImage>()) GetComponent<UnityEngine.UI.RawImage>().color = hoverImg;
+        if (myText) myText.color = hoverText;
+        if (myRawImage) myRawImage.color = hoverImg;
+        if (myImage) myImage.color = hoverImg;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         if (!buttonEnabled) return;
 
-        if (GetComponent<TMPro.TextMeshProUGUI>()) GetComponent<TMPro.TextMeshProUGUI>().color = defaultText;
-        if (GetComponent<UnityEngine.UI.RawImage>()) GetComponent<UnityEngine.UI.RawImage>().color = defaultImg;
+        if (myText) myText.color = defaultText;
+        if (myRawImage) myRawImage.color = defaultImg;
+        if (myImage) myImage.color = defaultImg;
     }
 
     private void OnEnable()
     {
+        if (setupNeeded)
+        {
+            myText = GetComponent<TMPro.TextMeshProUGUI>();
+            myRawImage = GetComponent<UnityEngine.UI.RawImage>();
+            myImage = GetComponent<UnityEngine.UI.Image>();
+            if (myImage) myLabel = transform.GetChild(0).GetComponent<TMPro.TextMeshProUGUI>();
+            setupNeeded = false;
+        }
+
         if (!buttonEnabled) return;
 
-        if (GetComponent<TMPro.TextMeshProUGUI>()) GetComponent<TMPro.TextMeshProUGUI>().color = defaultText;
-        if (GetComponent<UnityEngine.UI.RawImage>()) GetComponent<UnityEngine.UI.RawImage>().color = defaultImg;
+        if (myText) myText.color = defaultText;
+        if (myRawImage) myRawImage.color = defaultImg;
+        if (myImage) myImage.color = defaultImg;
     }
 
     public void EnableButton(int rank)
     {
         buttonEnabled = rank > 0;
+        gameRank = rank;
+    }
+
+    public void SetValues(string name, int rank)
+    {
+        if (myLabel) myLabel.text = name;
         gameRank = rank;
     }
 }

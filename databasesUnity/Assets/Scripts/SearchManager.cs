@@ -5,8 +5,12 @@ using TMPro;
 
 public class SearchManager : MonoBehaviour
 {
-    public GameObject Panel;
+    public static SearchManager instance;
 
+    public GameObject SearchingPanel;
+    public GameObject ResultsPanel;
+
+    [Header("Searching References")]
     [Tooltip("value = 0: Game Query\nvalue = 1: Dev Query")]
     public TMP_Dropdown DataTypeDrop;
 
@@ -17,6 +21,28 @@ public class SearchManager : MonoBehaviour
     public TMP_Dropdown DevsOptDrop;
 
     public TMP_InputField SearchBar;
+
+    [Header("Results References")]
+    public GameObject[] resultsButtons;
+    public GameObject noResultsText;
+
+    public GameObject leftButton;
+    public GameObject rightButton;
+    public TextMeshProUGUI bottomText;
+
+    [Header("Results Data")]
+    public int resultsPage = 0;     // 15 fit in a 'page'
+    public int currentResultsCount = -1;
+    public List<GameData> gameResults;
+    public List<DevData> devResults;
+
+    private void Awake()
+    {
+        if (instance)
+            if (instance != this) Destroy(instance);
+
+        instance = this;
+    }
 
     public void OnTypeChange()
     {
@@ -38,9 +64,14 @@ public class SearchManager : MonoBehaviour
         OnTypeChange();
     }
 
-    public void EnablePanel(bool enable)
+    public void EnableSearchPanel(bool enable)
     {
-        Panel.SetActive(enable);
+        SearchingPanel.SetActive(enable);
+    }
+
+    public void EnableResultsPanel(bool enable)
+    {
+        ResultsPanel.SetActive(enable);
     }
 
     public void Search()
@@ -64,6 +95,7 @@ public class SearchManager : MonoBehaviour
         switch (GamesOptDrop.value)
         {
             case 0:     // game_name
+                string param = "%" + search.ToLower() + "%";
 
                 break;
 
@@ -71,7 +103,7 @@ public class SearchManager : MonoBehaviour
                 int rank = -1;
                 if (int.TryParse(search, out rank))
                 {
-                    EnablePanel(false);
+                    EnableSearchPanel(false);
                     DataUIPooler.poolInstance.GetGamePanel(rank);
                 }
                 else Debug.LogWarning("Invalid search string for rank search.");
@@ -123,5 +155,129 @@ public class SearchManager : MonoBehaviour
                 Debug.LogWarning("Invalid dev option type.", DevsOptDrop.gameObject);
                 return;
         }
+    }
+
+    void ShowSearchResults()
+    {
+        if (!ResultsPanel.activeInHierarchy) EnableResultsPanel(true);
+
+        UpdatePageButtons();
+
+        if (currentResultsCount < 1)
+        {
+            noResultsText.SetActive(true);
+            return;
+        }
+
+        noResultsText.SetActive(false);
+        foreach (GameObject b in resultsButtons) b.SetActive(false);
+
+        for(int i = 0; i < 15; i++)     // ** changing search results button count will need to have a lot of 15s updated !!
+        {
+            int resultsIterator = (resultsPage * 15) + i;
+            if (resultsIterator >= currentResultsCount)
+            {
+                Debug.Log("Last result has been loaded. Ending results load.");
+                break;
+            }
+
+            resultsButtons[i].SetActive(true);
+
+            if (DataTypeDrop.value == 0)
+            {
+                // game query
+                resultsButtons[i].GetComponent<GameButton>().enabled = true;
+                resultsButtons[i].GetComponent<DevButton>().enabled = false;
+
+                resultsButtons[i].GetComponent<GameButton>().SetValues(gameResults[resultsIterator].name, gameResults[resultsIterator].rank);
+            }
+            else if (DataTypeDrop.value == 1)
+            {
+                // dev query
+                resultsButtons[i].GetComponent<GameButton>().enabled = false;
+                resultsButtons[i].GetComponent<DevButton>().enabled = true;
+
+                resultsButtons[i].GetComponent<DevButton>().SetValues(devResults[resultsIterator].name, devResults[resultsIterator].id);
+            }
+            else
+            {
+                // error
+                Debug.LogError("Data type error.", DataTypeDrop.gameObject);
+            }
+        }
+
+        Debug.Log("Loaded search results successfully.");
+        LoadingScreen.instance?.EnableScreen(false);
+    }
+
+    void UpdatePageButtons()
+    {
+        if (resultsPage > 0) leftButton.SetActive(true);
+        else leftButton.SetActive(false);
+
+        if ((resultsPage + 1) * 15 < currentResultsCount)
+        {
+            rightButton.SetActive(true);
+            bottomText.text = "Showing " + (resultsPage * 15 + 1) + "-" + ((resultsPage + 1) * 15).ToString() + " of " + currentResultsCount.ToString();
+        }
+        else
+        {
+            rightButton.SetActive(false);
+            bottomText.text = "Showing " + (resultsPage * 15 + 1) + "-" + currentResultsCount.ToString() + " of " + currentResultsCount.ToString();
+        }
+    }
+
+    public void IncrementSearchResults()
+    {
+        if ((resultsPage + 1) * 15 < currentResultsCount)
+        {
+            resultsPage++;
+            ShowSearchResults();
+        }
+        else
+        {
+            // right button should not be enabled, disable it
+            rightButton.SetActive(false);
+        }
+    }
+
+    public void DecrementSearchResults()
+    {
+        if (resultsPage > 0)
+        {
+            resultsPage--;
+            ShowSearchResults();
+        }
+        else
+        {
+            // left button should not be enabled, disable it
+            leftButton.SetActive(false);
+        }
+    }
+
+    public void RecieveResults(List<GameData> data)
+    {
+        resultsPage = 0;
+        currentResultsCount = data.Count;
+
+        gameResults = new List<GameData>();
+        devResults = new List<DevData>();
+
+        foreach (GameData g in data) gameResults.Add(g);
+
+        ShowSearchResults();
+    }
+
+    public void RecieveResults(List<DevData> data)
+    {
+        resultsPage = 0;
+        currentResultsCount = data.Count;
+
+        gameResults = new List<GameData>();
+        devResults = new List<DevData>();
+
+        foreach (DevData d in data) devResults.Add(d);
+
+        ShowSearchResults();
     }
 }

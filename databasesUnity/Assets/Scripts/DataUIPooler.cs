@@ -38,6 +38,7 @@ public class DataUIPooler : MonoBehaviour
         }
 
         LoadingScreen.instance?.EnableScreen(true);
+        // disable search screens
         GameLoader panel;
 
         if (gamePanelPool.Count > 0)
@@ -72,6 +73,7 @@ public class DataUIPooler : MonoBehaviour
         }
 
         LoadingScreen.instance?.EnableScreen(true);
+        // disable search screens
         DevLoader panel;
 
         if (devPanelPool.Count > 0)

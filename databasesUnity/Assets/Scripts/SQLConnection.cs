@@ -6,6 +6,12 @@ using MySql.Data.MySqlClient;
 
 public static class SQLConnection
 {
+	/*
+	 * References:
+	 *	Games database link:		https://www.kaggle.com/ashaheedq/video-games-sales-2019 
+	 *	Developers database link:	https://www.kaggle.com/andreshg/videogamescompaniesregions 
+	 */
+
 	public static MySqlConnection connection = new MySqlConnection(); // start with a new until a valid one is created.
 	static string databasePrefix = "cs366-2211_blasczyklm05";
 	static string netID = "blasczyklm05";
@@ -107,6 +113,7 @@ public static class SQLConnection
 					gameData.urlImg = reader[7].ToString();
 
 					if (!int.TryParse(reader[8].ToString(), out gameData.devID)) gameData.devID = -1;
+					gameData.dev = reader[18].ToString();
 					gameData.pub = reader[9].ToString();
 
 					if (!float.TryParse(reader[10].ToString(), out gameData.ratingCritic)) gameData.ratingCritic = -1;
@@ -135,14 +142,6 @@ public static class SQLConnection
 			}
 
 			reader.Close();
-
-			// check for dev
-			if (gameData.devID != -1)
-			{
-				// do another query getting the dev name
-				gameData.dev = GetAllDevData(gameData.devID).name;
-			}
-			else gameData.dev = "---";
 		}
 		catch (MySqlException ex)
 		{
@@ -337,6 +336,13 @@ public static class SQLConnection
 		Debug.Log("Found games count from dev id " + devID);
 		return count;
 	}
+
+	public static List<GameData> GamesNameSearch(string search)
+    {
+		// procedure: searchGameName(IN gameName VARCHAR(255))
+
+		return null;
+    }
 
 	public static void EndConnection()
     {
