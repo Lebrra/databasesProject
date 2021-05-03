@@ -57,6 +57,7 @@ public class FrontDesk : MonoBehaviour
         netID = nID.text.Trim();
         password = shadow.text.Trim();
         Credentials creds = new Credentials(netID, hostName, databasePrefix, password);
+        
         mycred = creds; // set front desk local
         SQLConnection.Connect(databasePrefix, netID, hostName, password);
         Debug.Log("After attempt state: "+ SQLConnection.connection.State);
