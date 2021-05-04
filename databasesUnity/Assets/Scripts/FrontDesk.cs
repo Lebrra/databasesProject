@@ -77,7 +77,7 @@ public class FrontDesk : MonoBehaviour
     {
         //Debug.Log(userSession.ConnectionString);
         // Updates status indicator.
-        if (mycred.IsFull())
+        if (mycred != null)
         {
             Debug.Log("credentials are not null!");
             Debug.Log(mycred.Check());
@@ -87,7 +87,7 @@ public class FrontDesk : MonoBehaviour
 
         } else
         {
-            Debug.Log(mycred.Check());
+            //Debug.Log(mycred.Check());
             Debug.Log("Credentails currently invalid.");
         }
         if (SQLConnection.connection.ConnectionString.Equals(""))

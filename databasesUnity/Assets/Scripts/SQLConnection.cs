@@ -58,7 +58,7 @@ public static class SQLConnection
 			con = new MySqlConnection(cs);
 			con.Open();
 			Debug.Log("Successfully connected to the database");
-			// update local connection instance
+			// update class connection instance
 			connection = con;
 		}
 		catch (MySqlException ex)
