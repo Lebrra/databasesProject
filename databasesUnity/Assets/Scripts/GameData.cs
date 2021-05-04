@@ -54,4 +54,9 @@ public struct DevData
     public int[] notableGameRanks;
     public string[] notableGames;
     public string[] notableGameImgURLs;
+
+    public override string ToString()
+    {
+        return string.Format("name={0} id={1} city={2} country={3} estab={4} note={5} gcount={6}", name, id, city, country, established, note, gamesCount);
+    }
 }

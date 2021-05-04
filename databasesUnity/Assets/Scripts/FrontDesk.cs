@@ -23,9 +23,11 @@ public class FrontDesk : MonoBehaviour
     [SerializeField] Button status;
     [SerializeField] Text text;
     protected Credentials mycred = null;
+    internal static DevData ddat;
+
     //MySqlConnection userSession;
-    
-    
+
+
     void Awake()
     {
         //userSession = new MySqlConnection();
@@ -77,7 +79,7 @@ public class FrontDesk : MonoBehaviour
     {
         //Debug.Log(userSession.ConnectionString);
         // Updates status indicator.
-        if (mycred.IsFull())
+        if (mycred != null)
         {
             Debug.Log("credentials are not null!");
             Debug.Log(mycred.Check());
@@ -87,7 +89,7 @@ public class FrontDesk : MonoBehaviour
 
         } else
         {
-            Debug.Log(mycred.Check());
+            //Debug.Log(mycred.Check());
             Debug.Log("Credentails currently invalid.");
         }
         if (SQLConnection.connection.ConnectionString.Equals(""))

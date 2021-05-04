@@ -24,7 +24,7 @@ public class DevLoader : DataLoader
 
     [Header("Games List")]
     public TextMeshProUGUI[] games;
-
+    public static DevData ddat;
     /// <summary>
     /// Loads game data into panel
     /// **This will need data parameters
@@ -37,6 +37,9 @@ public class DevLoader : DataLoader
             Debug.LogWarning("Invalid dev entry. ID = " + dev.id);
             return;
         }
+
+        // ADDED: one line to push dev up in visibility boy i really hope this idea works
+        ddat = dev;
 
         //load basic texts: 
         titleText.text = dev.name;
