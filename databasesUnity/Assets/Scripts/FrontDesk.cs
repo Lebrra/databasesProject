@@ -23,9 +23,11 @@ public class FrontDesk : MonoBehaviour
     [SerializeField] Button status;
     [SerializeField] Text text;
     protected Credentials mycred = null;
+    internal static DevData ddat;
+
     //MySqlConnection userSession;
-    
-    
+
+
     void Awake()
     {
         //userSession = new MySqlConnection();
