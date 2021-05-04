@@ -24,6 +24,7 @@ public class SearchManager : MonoBehaviour
     public TMP_InputField SearchBar;
 
     [Header("Results References")]
+    public TextMeshProUGUI resultsHeader;
     public GameObject[] resultsButtons;
     public GameObject noResultsText;
 
@@ -111,6 +112,7 @@ public class SearchManager : MonoBehaviour
         LoadingScreen.instance?.EnableScreen(true);
 
         searchActive = true;
+        resultsHeader.text = '"'.ToString() + search + '"'.ToString() + ":";
 
         switch (GamesOptDrop.value)
         {
@@ -326,6 +328,7 @@ public class SearchManager : MonoBehaviour
         else
         {
             // go back before search panel
+            Manager.instance.NavigateTo(1);
         }
     }
 }
