@@ -36,8 +36,10 @@ public class SearchManager : MonoBehaviour
     public bool searchActive = false;
     public int resultsPage = 0;     // 15 fit in a 'page'
     public int currentResultsCount = -1;
+
     public List<GameData> gameResults;
     public List<DevData> devResults;
+    public List<(string, string)> otherResults;
 
     private void Awake()
     {
@@ -160,6 +162,7 @@ public class SearchManager : MonoBehaviour
         LoadingScreen.instance?.EnableScreen(true);
 
         searchActive = true;
+        resultsHeader.text = '"'.ToString() + search + '"'.ToString() + ":";
 
         switch (DevsOptDrop.value)
         {
@@ -173,6 +176,63 @@ public class SearchManager : MonoBehaviour
 
             case 2:     // country
                 RecieveResults(SQLConnection.DevsCountrySearch(search));
+                break;
+
+            default:
+                Debug.LogWarning("Invalid dev option type.", DevsOptDrop.gameObject);
+                return;
+        }
+    }
+
+    public void CustomSearch(int searchType)
+    {
+        Debug.Log("Starting custom search...");
+        LoadingScreen.instance?.EnableScreen(true);
+
+        searchActive = true;
+
+        switch (searchType)
+        {
+            case 0:
+                resultsHeader.text = '"'.ToString() + "Best sold in Japan" + '"'.ToString() + ":";
+                RecieveResults(SQLConnection.GamesJPSearch());
+                break;
+
+            case 1:
+                resultsHeader.text = '"'.ToString() + "Most Games By Developer" + '"'.ToString() + ":";
+                RecieveResults(SQLConnection.DevsMostSearch());
+                break;
+
+            case 2:
+                resultsHeader.text = '"'.ToString() + "Best Critic-Rated Games" + '"'.ToString() + ":";
+                RecieveResults(SQLConnection.GamesCriticSearch());
+                break;
+
+            case 3:
+                resultsHeader.text = '"'.ToString() + "Best User-Rated Games" + '"'.ToString() + ":";
+                RecieveResults(SQLConnection.GamesUserSearch());
+                break;
+
+            case 4:
+                resultsHeader.text = '"'.ToString() + "Older Games" + '"'.ToString() + ":";
+                RecieveResults(SQLConnection.GamesOlderSearch());
+                break;
+
+            case 5:
+                resultsHeader.text = '"'.ToString() + "Newer Games" + '"'.ToString() + ":";
+                RecieveResults(SQLConnection.GamesNewerSearch());
+                break;
+
+            case 6:     // special platform search !
+                DataTypeDrop.value = 3;
+                resultsHeader.text = '"'.ToString() + "Platforms" + '"'.ToString() + ":";
+                RecieveResults(SQLConnection.PlatformSearch());
+                break;
+
+            case 7:     // special genre search !
+                DataTypeDrop.value = 2;
+                resultsHeader.text = '"'.ToString() + "Genres" + '"'.ToString() + ":";
+                RecieveResults(SQLConnection.GenreSearch());
                 break;
 
             default:
@@ -221,7 +281,15 @@ public class SearchManager : MonoBehaviour
                 resultsButtons[i].GetComponent<GameButton>().enabled = false;
                 resultsButtons[i].GetComponent<DevButton>().enabled = true;
 
-                resultsButtons[i].GetComponent<DevButton>().SetValues(devResults[resultsIterator].name, devResults[resultsIterator].id);
+                resultsButtons[i].GetComponent<DevButton>().SetValues(devResults[resultsIterator].name, devResults[resultsIterator].id, devResults[resultsIterator].gamesCount);
+            }
+            else if (DataTypeDrop.value == 2 || DataTypeDrop.value == 3)
+            {
+                // other query - 2 = platform or 3 = genre
+                resultsButtons[i].GetComponent<GameButton>().enabled = true;
+                resultsButtons[i].GetComponent<DevButton>().enabled = false;
+
+                resultsButtons[i].GetComponent<GameButton>().SetValues(otherResults[resultsIterator].Item1, otherResults[resultsIterator].Item2 + " Games", DataTypeDrop.value - 2);
             }
             else
             {
@@ -311,6 +379,18 @@ public class SearchManager : MonoBehaviour
         devResults = new List<DevData>();
 
         foreach (DevData d in data) devResults.Add(d);
+
+        ShowSearchResults();
+    }
+
+    public void RecieveResults(List<(string, string)> data)
+    {
+        resultsPage = 0;
+        currentResultsCount = data.Count;
+
+        otherResults = new List<(string, string)>();
+
+        foreach ((string, string) g in data) otherResults.Add((g.Item1, g.Item2));
 
         ShowSearchResults();
     }

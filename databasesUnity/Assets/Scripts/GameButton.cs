@@ -15,6 +15,7 @@ public class GameButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     public bool buttonEnabled = true;
 
     public int gameRank = -1;
+    public (int, string) alternateAction = (-1, "");
 
     Color32 defaultText = new Color32(30, 72, 149, 255);
     Color32 hoverText = new Color32(89, 210, 231, 255);
@@ -26,6 +27,28 @@ public class GameButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if(alternateAction.Item1 > -1)
+        {
+            SearchManager.instance.DataTypeDrop.value = 0;
+
+            // do this instead
+            if(alternateAction.Item1 == 0)
+            {
+                // do a platform search using Item2
+                SearchManager.instance.GamesOptDrop.value = 4;
+            }
+            else
+            {
+                // do a genre search using Item2
+                SearchManager.instance.GamesOptDrop.value = 5;
+            }
+
+            SearchManager.instance.SearchBar.text = alternateAction.Item2;
+            SearchManager.instance.Search();
+
+            return;
+        }
+
         if (gameRank > 0)
         {
             if (myText) myText.color = clickText;
@@ -87,5 +110,13 @@ public class GameButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         if (myLabel) myLabel.text = name;
         if (myLabel2) myLabel2.text = platform;
         gameRank = rank;
+        alternateAction.Item1 = -1;
+    }
+
+    public void SetValues(string name, string amount, int action)
+    {
+        alternateAction = (action, name);
+        myLabel.text = name;
+        myLabel2.text = amount;
     }
 }

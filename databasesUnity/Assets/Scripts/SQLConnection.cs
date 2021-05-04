@@ -636,6 +636,7 @@ public static class SQLConnection
 
 				if (!int.TryParse(reader[0].ToString(), out dev.id)) dev.id = -1;
 				dev.name = reader[1].ToString();
+				dev.gamesCount = -1;
 
 				dataList.Add(dev);
 
@@ -652,6 +653,276 @@ public static class SQLConnection
 
 		Debug.Log("Search Completed. " + dataList.Count + " results found.");
 		return dataList;
+	}
+
+
+	// Custom Searches
+	public static List<GameData> GamesJPSearch()
+    {
+		// procedure: searchGamesBestJP()
+		Debug.Log("Searching for most sold in JP...");
+
+		try
+		{
+			MySqlCommand gameCall = new MySqlCommand();
+			gameCall.Connection = connection;
+			gameCall.CommandType = CommandType.StoredProcedure;
+			gameCall.CommandText = "searchGamesBestJP";
+
+			return GamesSearchData(gameCall);
+		}
+		catch (MySqlException ex)
+		{
+			Debug.LogWarning(ex.ToString());
+		}
+
+		Debug.LogWarning("Query error.");
+		return null;
+	}
+	public static List<GameData> GamesCriticSearch()
+	{
+		// procedure: searchGamesBestCritic()
+		Debug.Log("Searching for best critic-reviewed games...");
+
+		try
+		{
+			MySqlCommand gameCall = new MySqlCommand();
+			gameCall.Connection = connection;
+			gameCall.CommandType = CommandType.StoredProcedure;
+			gameCall.CommandText = "searchGamesBestCritic";
+
+			return GamesSearchData(gameCall);
+		}
+		catch (MySqlException ex)
+		{
+			Debug.LogWarning(ex.ToString());
+		}
+
+		Debug.LogWarning("Query error.");
+		return null;
+	}
+	public static List<GameData> GamesUserSearch()
+	{
+		// procedure: searchGamesBestUser()
+		Debug.Log("Searching for best user-reviewed games...");
+
+		try
+		{
+			MySqlCommand gameCall = new MySqlCommand();
+			gameCall.Connection = connection;
+			gameCall.CommandType = CommandType.StoredProcedure;
+			gameCall.CommandText = "searchGamesBestUser";
+
+			return GamesSearchData(gameCall);
+		}
+		catch (MySqlException ex)
+		{
+			Debug.LogWarning(ex.ToString());
+		}
+
+		Debug.LogWarning("Query error.");
+		return null;
+	}
+	public static List<GameData> GamesOlderSearch()
+	{
+		// procedure: searchGameOlder()
+		Debug.Log("Searching for games created before 2000...");
+
+		try
+		{
+			MySqlCommand gameCall = new MySqlCommand();
+			gameCall.Connection = connection;
+			gameCall.CommandType = CommandType.StoredProcedure;
+			gameCall.CommandText = "searchGameOlder";
+
+			return GamesSearchData(gameCall);
+		}
+		catch (MySqlException ex)
+		{
+			Debug.LogWarning(ex.ToString());
+		}
+
+		Debug.LogWarning("Query error.");
+		return null;
+	}
+	public static List<GameData> GamesNewerSearch()
+	{
+		// procedure: searchGameNewer()
+		Debug.Log("Searching for games created after 2015...");
+
+		try
+		{
+			MySqlCommand gameCall = new MySqlCommand();
+			gameCall.Connection = connection;
+			gameCall.CommandType = CommandType.StoredProcedure;
+			gameCall.CommandText = "searchGameNewer";
+
+			return GamesSearchData(gameCall);
+		}
+		catch (MySqlException ex)
+		{
+			Debug.LogWarning(ex.ToString());
+		}
+
+		Debug.LogWarning("Query error.");
+		return null;
+	}
+	public static List<DevData> DevsMostSearch()
+	{
+		// procedure: searchDevMostGames()
+		Debug.Log("Searching for most apparent developers...");
+
+		try
+		{
+			MySqlCommand gameCall = new MySqlCommand();
+			gameCall.Connection = connection;
+			gameCall.CommandType = CommandType.StoredProcedure;
+			gameCall.CommandText = "searchDevMostGames";
+
+			List<DevData> dataList = new List<DevData>();
+			int dataLimiter = 1;
+
+			MySqlDataReader reader = gameCall.ExecuteReader();
+			while (reader.Read())   // this should only run once because of only having one row
+			{
+				if (dataLimiter > 1000)
+				{
+					Debug.LogWarning("I have loaded 1000 entries, stopping here.");
+					break;
+				}
+
+				try
+				{
+					DevData dev = new DevData();
+
+					if (!int.TryParse(reader[0].ToString(), out dev.id)) dev.id = -1;
+					dev.name = reader[1].ToString();
+					if (!int.TryParse(reader[2].ToString(), out dev.gamesCount)) dev.gamesCount = -1;
+
+					dataList.Add(dev);
+
+				}
+				catch (MySqlException ex)
+				{
+					Debug.LogWarning(ex.ToString());
+				}
+
+				dataLimiter++;
+			}
+
+			reader.Close();
+
+			Debug.Log("Search Completed. " + dataList.Count + " results found.");
+			return dataList;
+		}
+		catch (MySqlException ex)
+		{
+			Debug.LogWarning(ex.ToString());
+		}
+
+		Debug.LogWarning("Query error.");
+		return null;
+	}
+
+	public static List<(string, string)> GenreSearch()
+	{
+		// procedure: searchGenreMost()
+		Debug.Log("Searching for most apparent genres...");
+
+		try
+		{
+			MySqlCommand genreCall = new MySqlCommand();
+			genreCall.Connection = connection;
+			genreCall.CommandType = CommandType.StoredProcedure;
+			genreCall.CommandText = "searchGenreMost";
+
+			List<(string, string)> dataList = new List<(string, string)>();
+			int dataLimiter = 1;
+
+			MySqlDataReader reader = genreCall.ExecuteReader();
+			while (reader.Read())   // this should only run once because of only having one row
+			{
+				if (dataLimiter > 1000)
+				{
+					Debug.LogWarning("I have loaded 1000 entries, stopping here.");
+					break;
+				}
+
+				try
+				{
+					(string, string) genreData = (reader[0].ToString(), reader[1].ToString());
+					dataList.Add(genreData);
+				}
+				catch (MySqlException ex)
+				{
+					Debug.LogWarning(ex.ToString());
+				}
+
+				dataLimiter++;
+			}
+
+			reader.Close();
+
+			Debug.Log("Search Completed. " + dataList.Count + " results found.");
+			return dataList;
+		}
+		catch (MySqlException ex)
+		{
+			Debug.LogWarning(ex.ToString());
+		}
+
+		Debug.LogWarning("Query error.");
+		return null;
+	}
+	public static List<(string, string)> PlatformSearch()
+	{
+		// procedure: searchPlatMost()
+		Debug.Log("Searching for most apparent platforms...");
+
+		try
+		{
+			MySqlCommand genreCall = new MySqlCommand();
+			genreCall.Connection = connection;
+			genreCall.CommandType = CommandType.StoredProcedure;
+			genreCall.CommandText = "searchPlatMost";
+
+			List<(string, string)> dataList = new List<(string, string)>();
+			int dataLimiter = 1;
+
+			MySqlDataReader reader = genreCall.ExecuteReader();
+			while (reader.Read())   // this should only run once because of only having one row
+			{
+				if (dataLimiter > 1000)
+				{
+					Debug.LogWarning("I have loaded 1000 entries, stopping here.");
+					break;
+				}
+
+				try
+				{
+					(string, string) genreData = (reader[0].ToString(), reader[1].ToString());
+					dataList.Add(genreData);
+				}
+				catch (MySqlException ex)
+				{
+					Debug.LogWarning(ex.ToString());
+				}
+
+				dataLimiter++;
+			}
+
+			reader.Close();
+
+			Debug.Log("Search Completed. " + dataList.Count + " results found.");
+			return dataList;
+		}
+		catch (MySqlException ex)
+		{
+			Debug.LogWarning(ex.ToString());
+		}
+
+		Debug.LogWarning("Query error.");
+		return null;
 	}
 
 	#endregion
