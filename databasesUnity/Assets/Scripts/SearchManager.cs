@@ -14,6 +14,7 @@ public class SearchManager : MonoBehaviour
     [Header("Searching References")]
     [Tooltip("value = 0: Game Query\nvalue = 1: Dev Query")]
     public TMP_Dropdown DataTypeDrop;
+    public int dataType = 0;
 
     [Tooltip("value = 0: game_name\nvalue = 1: rank\nvalue = 2: devID\nvalue = 3: publisher\nvalue = 4: platform\nvalue = 5: genre")]
     public TMP_Dropdown GamesOptDrop;
@@ -31,6 +32,10 @@ public class SearchManager : MonoBehaviour
     public GameObject leftButton;
     public GameObject rightButton;
     public TextMeshProUGUI bottomText;
+
+    [Header("Special Searching")]
+    public GameObject SpecialPanel;
+    public bool inSpecial = false;
 
     [Header("Results Data")]
     public bool searchActive = false;
@@ -53,17 +58,19 @@ public class SearchManager : MonoBehaviour
 
     public void OnTypeChange()
     {
-        if (DataTypeDrop.value == 0)
+        dataType = DataTypeDrop.value;
+
+        if (dataType == 0)
         {
             GamesOptDrop.gameObject.SetActive(true);
             DevsOptDrop.gameObject.SetActive(false);
         }
-        else if (DataTypeDrop.value == 1)
+        else if (dataType == 1)
         {
             GamesOptDrop.gameObject.SetActive(false);
             DevsOptDrop.gameObject.SetActive(true);
         }
-        else Debug.LogError("Invalid data type.", DataTypeDrop.gameObject);
+        else Debug.LogWarning("Invalid data type.", DataTypeDrop.gameObject);
     }
 
     private void OnEnable()
@@ -74,6 +81,7 @@ public class SearchManager : MonoBehaviour
 
     public void EnableSearchMenu(bool enable)
     {
+        EnableSpecialPanel(false);
         EnableSearchPanel(enable);
         EnableResultsPanel(enable && searchActive);
         BackButton.SetActive(enable);
@@ -95,6 +103,12 @@ public class SearchManager : MonoBehaviour
         ResultsPanel.SetActive(enable);
     }
 
+    public void EnableSpecialPanel(bool enable)
+    {
+        SpecialPanel.SetActive(enable);
+        inSpecial = enable;
+    }
+
     public void Search()
     {
         if (SearchBar.text == "")
@@ -102,9 +116,9 @@ public class SearchManager : MonoBehaviour
             Debug.Log("nothing searched.");
             return;
         }
-
-        if (DataTypeDrop.value == 0) GameSearch(SearchBar.text);
-        else if (DataTypeDrop.value == 1) DevSearch(SearchBar.text);
+        dataType = DataTypeDrop.value;
+        if (dataType == 0) GameSearch(SearchBar.text);
+        else if (dataType == 1) DevSearch(SearchBar.text);
         else Debug.LogError("Invalid data type.", DataTypeDrop.gameObject);
     }
 
@@ -190,47 +204,54 @@ public class SearchManager : MonoBehaviour
         LoadingScreen.instance?.EnableScreen(true);
 
         searchActive = true;
+        EnableSpecialPanel(false);
 
         switch (searchType)
         {
             case 0:
+                DataTypeDrop.value = dataType = 0;
                 resultsHeader.text = '"'.ToString() + "Best sold in Japan" + '"'.ToString() + ":";
                 RecieveResults(SQLConnection.GamesJPSearch());
                 break;
 
             case 1:
+                DataTypeDrop.value = dataType = 1;
                 resultsHeader.text = '"'.ToString() + "Most Games By Developer" + '"'.ToString() + ":";
                 RecieveResults(SQLConnection.DevsMostSearch());
                 break;
 
             case 2:
+                DataTypeDrop.value = dataType = 0;
                 resultsHeader.text = '"'.ToString() + "Best Critic-Rated Games" + '"'.ToString() + ":";
                 RecieveResults(SQLConnection.GamesCriticSearch());
                 break;
 
             case 3:
+                DataTypeDrop.value = dataType = 0;
                 resultsHeader.text = '"'.ToString() + "Best User-Rated Games" + '"'.ToString() + ":";
                 RecieveResults(SQLConnection.GamesUserSearch());
                 break;
 
             case 4:
+                DataTypeDrop.value = dataType = 0;
                 resultsHeader.text = '"'.ToString() + "Older Games" + '"'.ToString() + ":";
                 RecieveResults(SQLConnection.GamesOlderSearch());
                 break;
 
             case 5:
+                DataTypeDrop.value = dataType = 0;
                 resultsHeader.text = '"'.ToString() + "Newer Games" + '"'.ToString() + ":";
                 RecieveResults(SQLConnection.GamesNewerSearch());
                 break;
 
             case 6:     // special platform search !
-                DataTypeDrop.value = 3;
+                dataType = 3;
                 resultsHeader.text = '"'.ToString() + "Platforms" + '"'.ToString() + ":";
                 RecieveResults(SQLConnection.PlatformSearch());
                 break;
 
             case 7:     // special genre search !
-                DataTypeDrop.value = 2;
+                dataType = 2;
                 resultsHeader.text = '"'.ToString() + "Genres" + '"'.ToString() + ":";
                 RecieveResults(SQLConnection.GenreSearch());
                 break;
@@ -267,7 +288,7 @@ public class SearchManager : MonoBehaviour
 
             resultsButtons[i].SetActive(true);
 
-            if (DataTypeDrop.value == 0)
+            if (dataType == 0)
             {
                 // game query
                 resultsButtons[i].GetComponent<GameButton>().enabled = true;
@@ -275,7 +296,7 @@ public class SearchManager : MonoBehaviour
 
                 resultsButtons[i].GetComponent<GameButton>().SetValues(gameResults[resultsIterator].name, gameResults[resultsIterator].rank, gameResults[resultsIterator].platform);
             }
-            else if (DataTypeDrop.value == 1)
+            else if (dataType == 1)
             {
                 // dev query
                 resultsButtons[i].GetComponent<GameButton>().enabled = false;
@@ -283,13 +304,13 @@ public class SearchManager : MonoBehaviour
 
                 resultsButtons[i].GetComponent<DevButton>().SetValues(devResults[resultsIterator].name, devResults[resultsIterator].id, devResults[resultsIterator].gamesCount);
             }
-            else if (DataTypeDrop.value == 2 || DataTypeDrop.value == 3)
+            else if (dataType == 2 || dataType == 3)
             {
                 // other query - 2 = platform or 3 = genre
                 resultsButtons[i].GetComponent<GameButton>().enabled = true;
                 resultsButtons[i].GetComponent<DevButton>().enabled = false;
 
-                resultsButtons[i].GetComponent<GameButton>().SetValues(otherResults[resultsIterator].Item1, otherResults[resultsIterator].Item2 + " Games", DataTypeDrop.value - 2);
+                resultsButtons[i].GetComponent<GameButton>().SetValues(otherResults[resultsIterator].Item1, otherResults[resultsIterator].Item2 + " Games", dataType - 2);
             }
             else
             {
@@ -399,15 +420,23 @@ public class SearchManager : MonoBehaviour
     {
         if (searchActive)
         {
+            Debug.Log("exit results...");
             EnableResultsPanel(false);
             SearchBar.text = "";
 
             gameResults.Clear();
             devResults.Clear();
+            searchActive = false;
+        }
+        else if (inSpecial)
+        {
+            Debug.Log("exit special panel...");
+            EnableSpecialPanel(false);
         }
         else
         {
             // go back before search panel
+            Debug.Log("returning to Menu...");
             Manager.instance.NavigateTo(1);
         }
     }
