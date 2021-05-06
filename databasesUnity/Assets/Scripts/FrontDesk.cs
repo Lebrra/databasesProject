@@ -23,7 +23,10 @@ public class FrontDesk : MonoBehaviour
     [SerializeField] Button status;
     [SerializeField] Text text;
     protected Credentials mycred = null;
-    internal static DevData ddat;
+    static System.Object selected; // generic  object because The data  
+    public static DevData ddat;
+    public static GameData gdat;
+  
 
     //MySqlConnection userSession;
 
@@ -103,6 +106,11 @@ public class FrontDesk : MonoBehaviour
             text.text = "Connected.";
             UnityEngine.SceneManagement.SceneManager.LoadScene(1, LoadSceneMode.Single);
         }
+    }
+
+    public static System.Object LoadSelection()
+    {
+        return selected;
     }
 
     [Serializable]
