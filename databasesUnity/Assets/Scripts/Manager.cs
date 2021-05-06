@@ -10,33 +10,18 @@ public class Manager : MonoBehaviour
 
     private void Awake()
     {
-        //if (instance) Destroy(this);
-        //else instance = this;
+        if (instance) Destroy(this);
+        else instance = this;
         
-		//DontDestroyOnLoad(gameObject);
+		DontDestroyOnLoad(gameObject);
 
         SQLConnection.Connect();
     }
 
     void Start()
     {
-		instance = this;
+		//instance = this;
         //Invoke("testGame", 3);
-    }
-
-    void testGame()
-    {
-        /*
-        GameData g = SQLConnection.GetAllGameData(1);
-        Debug.Log(g.name);
-        Debug.Log(g.rank);
-        Debug.Log(g.url);
-        Debug.Log(g.year);
-        Debug.Log(g.salesGlobal);
-        Debug.Log(g.devID);
-        Debug.Log(g.dev);*/
-
-        UnityEngine.SceneManagement.SceneManager.LoadScene(1);
     }
 
 	public static GameData GetAllGameData(int id)

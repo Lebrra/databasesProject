@@ -437,7 +437,7 @@ public class SearchManager : MonoBehaviour
         {
             // go back before search panel
             Debug.Log("returning to Menu...");
-            Manager.instance.NavigateTo(1);
+            Manager.instance?.NavigateTo(0);
         }
     }
 }
