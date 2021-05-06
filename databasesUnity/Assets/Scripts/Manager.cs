@@ -7,7 +7,7 @@ using UnityEngine;
 public class Manager : MonoBehaviour
 {
     public static Manager instance;
-
+	[SerializeField] UnityEngine.UI.Button audit;
     private void Awake()
     {
         if (instance) Destroy(this);
@@ -16,7 +16,18 @@ public class Manager : MonoBehaviour
 		DontDestroyOnLoad(gameObject);
 
         SQLConnection.Connect();
-    }
+
+		if (SQLConnection.connection.State == ConnectionState.Closed)
+		{
+			SQLConnection.Connect();
+		}
+
+		if (FrontDesk.ddat.name != null && audit != null)
+		{
+			// enables the button so long as the selection button has been used
+			audit.enabled = true;
+		}
+	}
 
     void Start()
     {

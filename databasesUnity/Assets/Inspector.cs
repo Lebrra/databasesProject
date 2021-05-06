@@ -20,7 +20,7 @@ public class Inspector : MonoBehaviour
 
     private void Awake()
     {
-        // set input field text to selected entity
+        // set input field text to selected entity if possible
         
         name.text = FrontDesk.ddat.name;
         id.text = FrontDesk.ddat.id.ToString();
@@ -28,6 +28,16 @@ public class Inspector : MonoBehaviour
         country.text = FrontDesk.ddat.country;
         note.text = FrontDesk.ddat.note;
     }
+
+    public void ExportDat()
+    {
+       FrontDesk.ddat.name = name.text;
+        FrontDesk.ddat.name = name.text;
+        FrontDesk.ddat.name = name.text;
+        FrontDesk.ddat.name = name.text;
+        FrontDesk.ddat.name = note.text;
+    }
+
 
     // Update is called once per frame
     void Update()
