@@ -3905,6 +3905,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: B-Audit
       objectReference: {fileID: 0}
+    - target: {fileID: 6759890746358970556, guid: 0c2e5dc0ca48eae41ad7f6dcb77eeed9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6770292137709702662, guid: 0c2e5dc0ca48eae41ad7f6dcb77eeed9, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

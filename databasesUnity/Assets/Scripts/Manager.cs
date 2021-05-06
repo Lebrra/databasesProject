@@ -136,6 +136,11 @@ public class Manager : MonoBehaviour
 		UnityEngine.SceneManagement.SceneManager.LoadScene(idx, UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
 
+	public void quit()
+    {
+		Application.Quit();
+    }
+
 	private void OnApplicationQuit()
     {
         SQLConnection.EndConnection();

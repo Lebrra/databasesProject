@@ -2453,6 +2453,7 @@ MonoBehaviour:
   ResultsPanel: {fileID: 267971188}
   BackButton: {fileID: 2056098818}
   DataTypeDrop: {fileID: 1031447759}
+  dataType: 0
   GamesOptDrop: {fileID: 1196571846}
   DevsOptDrop: {fileID: 25376994}
   SearchBar: {fileID: 1416472563}
@@ -17021,6 +17022,10 @@ PrefabInstance:
     - target: {fileID: 7734001748866123840, guid: 1dd96ddc044b74f49b694ad5ed62975b, type: 3}
       propertyPath: m_SizeDelta.y
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7734001749011710790, guid: 1dd96ddc044b74f49b694ad5ed62975b, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -103.70007
       objectReference: {fileID: 0}
     - target: {fileID: 7734001749153131138, guid: 1dd96ddc044b74f49b694ad5ed62975b, type: 3}
       propertyPath: m_AnchorMin.y
